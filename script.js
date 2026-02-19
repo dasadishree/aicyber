@@ -42,18 +42,19 @@ function scanForAI(rawText) {
     if(hasContentAuth) { reasons.push('Content authenticity data found'); }
 
     results.innerHTML = `
-        <h2>Results</h2>
-        <h3>${isAI ? "Likely AI Generated" : "No AI detected"}</h3>
-        
-        <details>
-        <summary>Show Metadata Details</summary>
-            <p><strong>Generator:</strong> ${generatorName || 'Not found'}</p>
-            <p><strong>Software Agent:</strong> ${softwareAgent || 'Not found'}</p>
-            <p><strong>Source Type:</strong> ${sourceType || 'Not found'}</p>
-            <p><strong>trainedAlgorithmicMedia:</strong> ${hasTrainedAlgo ? 'YES' : 'NO'}</p>
-            <p><strong>C2PA data present:</strong> ${hasC2PA ? 'YES' : 'NO'}</p>
-            <p><strong>Signals found:</strong></p>
-            <ul>${reasons.map(r => `<li>${r}</li>`).join('') || '<li>None</li>'}</ul>
+        <h2 class="results-title">Results</h2>
+        <div class="verdict verdict--${isAI ? 'ai' : 'clean'}">${isAI ? "Likely AI Generated" : "No AI detected"}</div>
+        <details class="metadata-dropdown">
+            <summary>Show metadata details</summary>
+            <div class="metadata-content">
+                <p><strong>Generator:</strong> ${generatorName || 'Not found'}</p>
+                <p><strong>Software Agent:</strong> ${softwareAgent || 'Not found'}</p>
+                <p><strong>Source Type:</strong> ${sourceType || 'Not found'}</p>
+                <p><strong>trainedAlgorithmicMedia:</strong> ${hasTrainedAlgo ? 'YES' : 'NO'}</p>
+                <p><strong>C2PA data present:</strong> ${hasC2PA ? 'YES' : 'NO'}</p>
+                <p><strong>Signals found:</strong></p>
+                <ul>${reasons.map(r => `<li>${r}</li>`).join('') || '<li>None</li>'}</ul>
+            </div>
         </details>
-            `;
+    `;
 }
