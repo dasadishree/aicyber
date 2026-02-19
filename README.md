@@ -5,7 +5,6 @@ Things in particular to look at:
 - actions_software_agent_name (ex: GPT-4o, )
 - actions_digital_source_type (ex: http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia)
 
-
 explaining metadata:
 c2pa.created - image was just created
 c2pa.converted - changed format??

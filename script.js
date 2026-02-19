@@ -7,14 +7,14 @@ upload.addEventListener('change', function() {
 
     const reader= new FileReader();
 
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         const rawText = new TextDecoder('utf-8', {fatal: false}).decode(e.target.result);
         scanForAI(rawText);
     };
     reader.readAsArrayBuffer(file);
 });
 
-function scanForAI(rawText) {
+async function scanForAI(rawText) {
     // //find value after keyword
     function extractAfter(text, keyword, stopChar) {
         const idx = text.indexOf(keyword);
@@ -41,6 +41,9 @@ function scanForAI(rawText) {
     if(hasC2PA) { reasons.push('C2PA provenance data present'); }
     if(hasContentAuth) { reasons.push('Content authenticity data found'); }
 
+    const metadataText = `trainedAlgorithmicMedia: ${hasTrainedAlgo}, C2PA: ${hasC2PA}, generator: ${generatorName}, sourceType: ${sourceType}`;
+    const summary = await getSummary(metadataText);
+
     results.innerHTML = `
         <h2 class="results-title">Results</h2>
         <div class="verdict verdict--${isAI ? 'ai' : 'clean'}">${isAI ? "Likely AI Generated" : "No AI detected"}</div>
@@ -57,4 +60,14 @@ function scanForAI(rawText) {
             </div>
         </details>
     `;
+}
+
+async function getSummary(metadata){
+    const response = await fetch("http://localhost:3000/summarize", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ metadata: metadata})
+    });
+    const data = await response.json();
+    return data.summary;
 }

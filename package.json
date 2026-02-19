@@ -1,0 +1,18 @@
+{
+  "name": "aicyber",
+  "version": "1.0.0",
+  "description": "Things in particular to look at: - file_name  - claim__generator__info_name (ex: Google C2PA Core Generator Library, ChatGPT) - actions_software_agent_name (ex: GPT-4o, ) - actions_digital_source_type (ex: http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia)",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.77.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  }
+}
