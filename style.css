@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap');
+
+body{
+    background-color: darkolivegreen;
+    font-family: sans-serif;
+    font-weight: 800;
+    font-style:normal;
+    text-align:center;
+}
+h1{
+    font-family: "Special Gothic Expanded One", sans-serif;
+    color:greenyellow;
+}
+p{
+    color:black;
+}
+#results{
+    background-color: lightgreen;
+    max-width: 500px;
+    margin:20px auto;
+    padding: 24px;
+    border-radius: 12px;
+    word-wrap: break-word;
+}
+
+#imageUpload{
+    display: none;
+}
+#uploadBtn{
+    display: inline-block;
+    background-color: greenyellow;
+    color: darkolivegreen;
+    padding: 12px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: "Special Gothic Expanded One", sans-serif;
+    font-weight: 800;
+    margin: 20px auto;
+}
+#uploadBtn:hover{
+    background-color:white;
+}

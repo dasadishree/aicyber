@@ -44,12 +44,16 @@ function scanForAI(rawText) {
     results.innerHTML = `
         <h2>Results</h2>
         <h3>${isAI ? "Likely AI Generated" : "No AI detected"}</h3>
-        <p><strong>Generator:</strong> ${generatorName || 'Not found'}</p>
-        <p><strong>Software Agent:</strong> ${softwareAgent || 'Not found'}</p>
-        <p><strong>Source Type:</strong> ${sourceType || 'Not found'}</p>
-        <p><strong>trainedAlgorithmicMedia:</strong> ${hasTrainedAlgo ? 'YES' : 'NO'}</p>
-        <p><strong>C2PA data present:</strong> ${hasC2PA ? 'YES' : 'NO'}</p>
-        <p><strong>Signals found:</strong></p>
-        <ul>${reasons.map(r => `<li>${r}</li>`).join('') || '<li>None</li>'}</ul>
-    `;
+        
+        <details>
+        <summary>Show Metadata Details</summary>
+            <p><strong>Generator:</strong> ${generatorName || 'Not found'}</p>
+            <p><strong>Software Agent:</strong> ${softwareAgent || 'Not found'}</p>
+            <p><strong>Source Type:</strong> ${sourceType || 'Not found'}</p>
+            <p><strong>trainedAlgorithmicMedia:</strong> ${hasTrainedAlgo ? 'YES' : 'NO'}</p>
+            <p><strong>C2PA data present:</strong> ${hasC2PA ? 'YES' : 'NO'}</p>
+            <p><strong>Signals found:</strong></p>
+            <ul>${reasons.map(r => `<li>${r}</li>`).join('') || '<li>None</li>'}</ul>
+        </details>
+            `;
 }
