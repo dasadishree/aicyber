@@ -1,37 +1,55 @@
-import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.17.0/+esm';
 const upload = document.getElementById('imageUpload');
 const results = document.getElementById('results');
-const c2pa = await createC2pa({
-    workerSrc: new URL('https://cdn.jsdelivr.net/npm/c2pa@0.17.0/dist/c2pa.worker.min.js'),
-    wasmSrc: new URL('https://cdn.jsdelivr.net/npm/c2pa@0.17.0/dist/assets/wasm/toolkit_bg.wasm'),
-});
 
-upload.addEventListener('change', async function() {
+upload.addEventListener('change', function() {
     const file = upload.files[0];
-    results.innerHTML = '<p>Scanning..</p>';
+    results.innerHTML = '<p>Scanning...</p>';
 
-    try{
-        const { manifestStore } = await c2pa.read(file);
+    const reader= new FileReader();
 
-        if(!manifestStore) {
-            results.innerHTML = '<p>No C2PA data found in this image.</p>';
-            return;
-        }
-
-        const manifest = manifestStore.activeManifest;
-        console.log('Full manifest:', manifest);
-        console.log('Claim generator:', manifest?.claimGenerator);
-        console.log('Assertions:', manifest?.assertions);
-        console.log('All keys:', Object.keys(manifest || {}));
-        const generatorName = manifest?.claimGenerator?.product || 'Not found';
-        const assertions = manifest?.assertions?.get('c2pa.actions');
-    
-        results.innerHTML = `
-            <p><strong>Generator:</strong> ${generatorName}</p>
-            <p><strong>C2PA data:</strong> YES</p>
-        `;
-    } catch(err) {
-        console.error(err);
-        results.innerHTML = '<p>Error reading C2PA data: ' + err.message+'</p>';
-    }
+    reader.onload = function(e) {
+        const rawText = new TextDecoder('utf-8', {fatal: false}).decode(e.target.result);
+        scanForAI(rawText);
+    };
+    reader.readAsArrayBuffer(file);
 });
+
+function scanForAI(rawText) {
+    // //find value after keyword
+    function extractAfter(text, keyword, stopChar) {
+        const idx = text.indexOf(keyword);
+        if(idx===-1) return null;
+        const start = idx+keyword.length;
+        const chunk = text.substring(start, start+200);
+        return chunk.replace(/[^\x20-\x7E]/g, '').trim().split(stopChar)[0].trim();
+    }
+    
+    //key fields
+    const knownGenerators = ['ChatGPT', 'Gemini', 'DALL-E'];
+    const generatorName = knownGenerators.find(name => rawText.includes(name)) || null;
+    const softwareAgent = extractAfter(rawText, 'softwareAgent":"', '"') || extractAfter(rawText, 'softwareAgent">', '<');
+    const sourceType = extractAfter(rawText, 'digitalSourceType":"', '"') || extractAfter(rawText, 'digitalsourcetype/', '"') || extractAfter(rawText, 'DigitalSourceType">', '<');
+    const hasTrainedAlgo = rawText.includes('trainedAlgorithmicMedia');
+    const hasC2PA = rawText.includes('c2pa');
+    const hasContentAuth = rawText.includes('contentauth');
+
+    let isAI =false;
+    let reasons = [];
+
+    if(generatorName) { isAI=true; reasons.push('Known AI generator: ' + generatorName); }
+    if(hasTrainedAlgo) { isAI=true; reasons.push('trainedAlgorithmicMedia tag detected'); }
+    if(hasC2PA) { reasons.push('C2PA provenance data present'); }
+    if(hasContentAuth) { reasons.push('Content authenticity data found'); }
+
+    results.innerHTML = `
+        <h2>Results</h2>
+        <h3>${isAI ? "Likely AI Generated" : "No AI detected"}</h3>
+        <p><strong>Generator:</strong> ${generatorName || 'Not found'}</p>
+        <p><strong>Software Agent:</strong> ${softwareAgent || 'Not found'}</p>
+        <p><strong>Source Type:</strong> ${sourceType || 'Not found'}</p>
+        <p><strong>trainedAlgorithmicMedia:</strong> ${hasTrainedAlgo ? 'YES' : 'NO'}</p>
+        <p><strong>C2PA data present:</strong> ${hasC2PA ? 'YES' : 'NO'}</p>
+        <p><strong>Signals found:</strong></p>
+        <ul>${reasons.map(r => `<li>${r}</li>`).join('') || '<li>None</li>'}</ul>
+    `;
+}
