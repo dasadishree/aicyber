@@ -4,7 +4,12 @@ const results = document.getElementById('results');
 upload.addEventListener('change', function() {
     const file = upload.files[0];
     document.getElementById('popup-overlay').style.display = 'flex';
-    results.innerHTML = '<p>Scanning...</p>';
+    results.innerHTML = `
+        <p>Scanning...</p>
+        <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+        </div>
+    `;
 
     const reader= new FileReader();
 
@@ -26,7 +31,7 @@ async function scanForAI(rawText) {
     }
     
     //key fields
-    const knownGenerators = ['ChatGPT', 'Gemini', 'DALL-E'];
+    const knownGenerators = ['ChatGPT', 'Gemini', 'DALL-E', 'Midjourney', 'Stable Diffusion', 'Adobe Firefly', 'Ideogram', 'Runway', 'Leonardo'];
     const generatorName = knownGenerators.find(name => rawText.includes(name)) || null;
     const softwareAgent = extractAfter(rawText, 'softwareAgent":"', '"') || extractAfter(rawText, 'softwareAgent">', '<');
     const sourceType = extractAfter(rawText, 'digitalSourceType":"', '"') || extractAfter(rawText, 'digitalsourcetype/', '"') || extractAfter(rawText, 'DigitalSourceType">', '<');
@@ -34,7 +39,7 @@ async function scanForAI(rawText) {
     const hasC2PA = rawText.includes('c2pa');
     const hasContentAuth = rawText.includes('contentauth');
 
-    let isAI =false;
+    let isAI =false; 
     let reasons = [];
 
     if(generatorName) { isAI=true; reasons.push('Known AI generator: ' + generatorName); }
@@ -42,8 +47,16 @@ async function scanForAI(rawText) {
     if(hasC2PA) { reasons.push('C2PA provenance data present'); }
     if(hasContentAuth) { reasons.push('Content authenticity data found'); }
 
+    if(!hasTrainedAlgo && !hasC2PA && !generatorName && !hasContentAuth){
+        results.innerHTML = `
+            <p>No AI metadata found in this image.</p>
+            <p>This looks like a real photo! No C2PA provenance data or AI generator signals were detected.</p>    
+        `;
+    }
+
+    const rawMetadataText = rawText.substring(1,5000);
     const metadataText = `Generator: ${generatorName || 'unknown'}, trainedAlgorithmicMedia: ${hasTrainedAlgo}, C2PA present: ${hasC2PA}, signals: ${reasons.join(', ')}`;
-    const summary = await getSummary(metadataText);
+    const summary = await getSummary(rawMetadataText+metadataText);
 
     document.getElementById('popup-overlay').style.display = 'flex';
 
@@ -67,7 +80,7 @@ async function scanForAI(rawText) {
 }
 
 async function getSummary(metadata){
-    const response = await fetch("http://localhost:3000/summarize", {
+    const response = await fetch("https://aicyber-4785.onrender.com/summarize", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({ metadata: metadata})
