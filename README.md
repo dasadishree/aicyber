@@ -1,4 +1,7 @@
 # Website/tool that will read metadata of image, and use AI to tell whether it's an AI-generated image or not!
+https://drive.google.com/file/d/1mMAZHyihMiYda5tZDngRG-_8DC2Nr1Hc/view?usp=sharing
+
+
 Things in particular to look at:
 - file_name 
 - claim__generator__info_name (ex: Google C2PA Core Generator Library, ChatGPT)
