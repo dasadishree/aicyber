@@ -3,6 +3,7 @@ const results = document.getElementById('results');
 
 upload.addEventListener('change', function() {
     const file = upload.files[0];
+    document.getElementById('popup-overlay').style.display = 'flex';
     results.innerHTML = '<p>Scanning...</p>';
 
     const reader= new FileReader();
@@ -41,12 +42,15 @@ async function scanForAI(rawText) {
     if(hasC2PA) { reasons.push('C2PA provenance data present'); }
     if(hasContentAuth) { reasons.push('Content authenticity data found'); }
 
-    const metadataText = `trainedAlgorithmicMedia: ${hasTrainedAlgo}, C2PA: ${hasC2PA}, generator: ${generatorName}, sourceType: ${sourceType}`;
+    const metadataText = `Generator: ${generatorName || 'unknown'}, trainedAlgorithmicMedia: ${hasTrainedAlgo}, C2PA present: ${hasC2PA}, signals: ${reasons.join(', ')}`;
     const summary = await getSummary(metadataText);
+
+    document.getElementById('popup-overlay').style.display = 'flex';
 
     results.innerHTML = `
         <h2 class="results-title">Results</h2>
         <div class="verdict verdict--${isAI ? 'ai' : 'clean'}">${isAI ? "Likely AI Generated" : "No AI detected"}</div>
+        <p class="aisummary"><strong>AI Summary</strong> ${summary}</p>
         <details class="metadata-dropdown">
             <summary>Show metadata details</summary>
             <div class="metadata-content">
@@ -70,4 +74,8 @@ async function getSummary(metadata){
     });
     const data = await response.json();
     return data.summary;
+}
+
+function closePopup() {
+    document.getElementById('popup-overlay').style.display = 'none';
 }

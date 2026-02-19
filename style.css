@@ -65,14 +65,11 @@ h1 {
 
 /* results styling */
 #results {
-    background-color: lightgreen;
     padding: 28px;
-    border-radius: 14px;
     word-wrap: break-word;
     text-align: left;
     line-height: 1.5;
     font-size: 0.9rem;
-    border: 2px solid rgba(0,0,0,0.12);
 }
 #results:empty {
     display: none;
@@ -153,4 +150,21 @@ h1 {
 }
 .metadata-content ul {
     padding-left: 20px;
+}
+.aisummary{
+    color: green
+}
+
+/* popup vintage windows */
+#popup-overlay{
+    position: fixed;
+    inset:0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index:999;
+}
+#popup-window{
+    width:400px;
 }
