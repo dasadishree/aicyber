@@ -76,6 +76,8 @@ async function getSummary(metadata){
     return data.summary;
 }
 
+document.getElementById('closeBtn').addEventListener('click', closePopup);
+
 function closePopup() {
     document.getElementById('popup-overlay').style.display = 'none';
 }

@@ -166,5 +166,44 @@ h1 {
     z-index:999;
 }
 #popup-window{
-    width:400px;
+    width:85vw;
+    background-color: rgb(235, 255, 235);
+}
+#popup-window .title-bar {
+    background: green;
+}
+#popup-window .window-body{
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+
+/* c2pa explainer */
+#c2pa{
+    h2{
+        color:green;
+        font-family: "Special Gothic Expanded One";
+        padding:0px;
+    }
+    margin-bottom: 3vh;
+    background: rgba(205,255,205,0.6);
+    border: 2px solid rgba(0,0,0,0.12);
+    border-radius: 10px;
+    overflow: hidden;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    color: #2d4a1a;
+    transition: background 0.2s;
+}
+#c2pa-content{
+
+    border-top: 1px solid rgba(0,0,0,0.1);
+    font-size: 0.88rem;
+    color: #1a2610;
+}
+.c2pa-summary{
+    padding-top:10px;
+    padding-bottom:10px;
 }
